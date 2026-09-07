@@ -1,34 +1,33 @@
-def generate_notes(topic):
-    topic = topic.lower()
+notes_data = {
+    "python": """
+# 🐍 Python
 
-    notes = {
-        "python": """
-# 🐍 Python Notes
-
-## What is Python?
-Python is a high-level programming language.
+## Introduction
+Python is a high-level, easy-to-learn programming language.
 
 ## Features
-- Easy to learn
-- Object-oriented
-- Open source
-- Cross-platform
+- Easy syntax
+- Object-Oriented
+- Open Source
+- Cross Platform
 
 ## Applications
+- AI
 - Web Development
-- Artificial Intelligence
 - Data Science
 - Automation
 
-## Summary
-Python is one of the most popular programming languages because it is simple and powerful.
+## Advantages
+- Beginner friendly
+- Huge library support
+- Fast development
 """,
 
-        "ai": """
+    "ai": """
 # 🤖 Artificial Intelligence
 
 ## Definition
-Artificial Intelligence (AI) enables computers to perform tasks that normally require human intelligence.
+Artificial Intelligence is the simulation of human intelligence in machines.
 
 ## Types
 - Narrow AI
@@ -36,19 +35,15 @@ Artificial Intelligence (AI) enables computers to perform tasks that normally re
 
 ## Applications
 - Chatbots
-- Self-driving cars
 - Healthcare
+- Self Driving Cars
 - Robotics
-
-## Summary
-AI helps machines learn, reason, and make decisions.
 """,
 
-        "machine learning": """
-# 📊 Machine Learning
+    "machine learning": """
+# 📘 Machine Learning
 
-## Definition
-Machine Learning is a branch of AI that allows computers to learn from data.
+Machine Learning is a branch of AI.
 
 ## Types
 - Supervised Learning
@@ -56,22 +51,14 @@ Machine Learning is a branch of AI that allows computers to learn from data.
 - Reinforcement Learning
 
 ## Applications
-- Recommendation systems
-- Fraud detection
-- Image recognition
-
-## Summary
-Machine Learning improves predictions by learning from examples.
+- Recommendation Systems
+- Image Recognition
+- Fraud Detection
 """
-    }
+}
 
-    return notes.get(
-        topic,
-        f"""
-# 📚 {topic.title()}
-
-Notes for this topic are not available yet.
-
-More subjects will be added in future updates.
-"""
+def generate_notes(topic):
+    return notes_data.get(
+        topic.lower(),
+        f"# {topic}\n\nNo notes available for this topic yet."
     )
