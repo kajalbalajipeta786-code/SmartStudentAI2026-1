@@ -1,6 +1,6 @@
 streamlit
-supabase
 google-generativeai
+supabase
 python-dotenv
 requests
 pandas
