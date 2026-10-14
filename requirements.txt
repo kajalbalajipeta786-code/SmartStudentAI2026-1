@@ -1,5 +1,5 @@
 streamlit
-anthropic
+goolge_generativeai
 supabase
 python-dotenv
 requests
