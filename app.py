@@ -1,9 +1,15 @@
 import streamlit as st
-import google.generativeai as genai 
+import google.generativeai as genai
 
 st.set_page_config(page_title="Smart Student AI", page_icon="🎓")
-st.title("🎓 Smart Student AI")
 
+if "GEMINI_API_KEY" not in st.secrets:
+    st.error("Add GEMINI_API_KEY in Settings → Secrets.")
+    st.stop()
+
+genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+
+model = genai.GenerativeModel("gemini-2.5-flash")
 SYSTEM_PROMPT = (
     "You are Smart Student AI, a friendly study assistant. "
     "Explain things simply, give examples, and help with homework, "
