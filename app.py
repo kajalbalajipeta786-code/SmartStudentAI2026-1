@@ -55,4 +55,4 @@ if prompt := st.chat_input("Ask me anything"):
 
         st.write(text)
 
-    st.session_state.history.append({"role": "assistant", "content": text)}
+    st.session_state.history.append({"role": "assistant", "content": text})
