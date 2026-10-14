@@ -43,14 +43,16 @@ for m in st.session_state.history:
 if prompt := st.chat_input("Ask me anything"):
     st.session_state.history.append({"role": "user", "content": prompt})
     st.chat_message("user").write(prompt)
+
     with st.chat_message("assistant"):
         try:
             with st.spinner("Thinking..."):
-                reply = client.messages.create(
-                    model="claude-sonnet-5",
-                    max_tokens=1000,
-                    system=SYSTEM_PROMPT,
-                    messages=st.session_state.history,
-                )
-           response = model.generate_content(prompt)
-text = response.text
+                response = model.generate_content(prompt)
+                text = response.text
+
+        except Exception as e:
+            text = f"Error: {e}"
+
+        st.write(text)
+
+    st.session_state.history.append({"role": "assistant", "content": text)
