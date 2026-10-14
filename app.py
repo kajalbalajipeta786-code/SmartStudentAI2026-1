@@ -33,7 +33,10 @@ if st.sidebar.button("Clear chat"):
 if "history" not in st.session_state:
     st.session_state.history = []
 
-if st.sidebar.button("Clear chat"):
+if st.sidebar.button(
+    "🗑️ Clear Chat",
+    key="clear_chat_btn"
+):
     st.session_state.history = []
     st.rerun()
 
