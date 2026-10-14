@@ -16,7 +16,7 @@ SYSTEM_PROMPT = (
     "writing, and exam prep. If you are unsure, say so."
 )
 
-if if "GEMINI_API_KEY" not in st.secrets:
+if "GEMINI_API_KEY" not in st.secrets:
     st.error("Add GEMINI_API_KEY in Settings → Secrets.")
     st.stop()
 
