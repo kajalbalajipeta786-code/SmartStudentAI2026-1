@@ -1,5 +1,5 @@
 streamlit
-goolge_generativeai
+google_generativeai
 supabase
 python-dotenv
 requests
