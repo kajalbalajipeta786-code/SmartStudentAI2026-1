@@ -1,5 +1,5 @@
 streamlit
-authropic
+anthropic
 supabase
 python-dotenv
 requests
