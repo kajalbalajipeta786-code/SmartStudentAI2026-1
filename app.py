@@ -23,10 +23,12 @@ if "GEMINI_API_KEY" not in st.secrets:
 genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 model = genai.GenerativeModel("gemini-2.5-flash")
 
-import google.generativeai as genai
+if "history" not in st.session_state:
+    st.session_state.history = []
 
-genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-model = genai.GenerativeModel("gemini-2.5-flash")
+if st.sidebar.button("Clear chat"):
+    st.session_state.history = []
+    st.rerun()
 
 if "history" not in st.session_state:
     st.session_state.history = []
