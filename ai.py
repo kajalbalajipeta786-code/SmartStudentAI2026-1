@@ -1,29 +1,22 @@
-from openai import OpenAI
 import streamlit as st
+import anthropic
 
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+client = anthropic.Anthropic(api_key=st.secrets["ANTHROPIC_API_KEY"])
 
-def ask_ai(question):
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4.1-mini",
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "You are Smart Student AI, a helpful tutor. "
-                        "Explain answers in a simple way for students."
-                    )
-                },
-                {
-                    "role": "user",
-                    "content": question
-                }
-            ],
-            temperature=0.5
-        )
+if "history" not in st.session_state:
+    st.session_state.history = []
 
-        return response.choices[0].message.content
+for m in st.session_state.history:
+    st.chat_message(m["role"]).write(m["content"])
 
-    except Exception as e:
-        return f"Error: {e}"
+if prompt := st.chat_input("Ask me anything"):
+    st.session_state.history.append({"role": "user", "content": prompt})
+    st.chat_message("user").write(prompt)
+    reply = client.messages.create(
+        model="claude-sonnet-5", max_tokens=1000,
+        system="You are a helpful assistant.",
+        messages=st.session_state.history,
+    )
+    text = reply.content[0].text
+    st.session_state.history.append({"role": "assistant", "content": text})
+    st.chat_message("assistant").write(text)
