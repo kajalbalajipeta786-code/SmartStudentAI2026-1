@@ -1,5 +1,5 @@
 import streamlit as st
-import anthropic
+import google.generativeai as genai 
 
 st.set_page_config(page_title="Smart Student AI", page_icon="🎓")
 st.title("🎓 Smart Student AI")
@@ -10,9 +10,12 @@ SYSTEM_PROMPT = (
     "writing, and exam prep. If you are unsure, say so."
 )
 
-if "ANTHROPIC_API_KEY" not in st.secrets:
-    st.error("Add ANTHROPIC_API_KEY in your app's Settings > Secrets.")
+if if "GEMINI_API_KEY" not in st.secrets:
+    st.error("Add GEMINI_API_KEY in Settings → Secrets.")
     st.stop()
+
+genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+model = genai.GenerativeModel("gemini-2.5-flash")
 
 client = anthropic.Anthropic(api_key=st.secrets["ANTHROPIC_API_KEY"])
 
@@ -38,8 +41,5 @@ if prompt := st.chat_input("Ask me anything"):
                     system=SYSTEM_PROMPT,
                     messages=st.session_state.history,
                 )
-            text = reply.content[0].text
-        except Exception as e:
-            text = f"Sorry, something went wrong: {e}"
-        st.write(text)
-    st.session_state.history.append({"role": "assistant", "content": text})
+           response = model.generate_content(prompt)
+text = response.text
