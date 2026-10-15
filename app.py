@@ -8,7 +8,7 @@ if "GOOGLE_API_KEY" not in st.secrets:
     st.stop()
 
 genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
-model = genai.GenerativeModel("gemini-2.5-flash")
+model = genai.GenerativeModel("gemini-3.8-flash")
 
 
 def ask_ai(prompt):
