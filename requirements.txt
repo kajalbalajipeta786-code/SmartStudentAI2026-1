@@ -1,8 +1,9 @@
 streamlit
-google_generativeai
+google-generativeai
 supabase
 python-dotenv
 requests
 pandas
 PyPDF2
 Pillow
+fpdf2
