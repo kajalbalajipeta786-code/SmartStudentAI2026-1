@@ -1,5 +1,6 @@
 import streamlit as st
 import google.generativeai as genai
+from fpdf import FPDF
 
 st.set_page_config(page_title="Smart Student AI", page_icon="🎓")
 
@@ -44,14 +45,64 @@ def generate_game_question(topic):
     return ask_ai(prompt)
 
 
+def generate_plan(assignments, practicals, tests, exam_date, study_hours):
+    prompt = (
+        "Create a realistic day-by-day study and task plan for a student based on this info:\n"
+        f"Assignments due: {assignments}\n"
+        f"Practical records to complete: {practicals}\n"
+        f"Daily slip tests: {tests}\n"
+        f"Mid-semester exam date: {exam_date}\n"
+        f"Available study time per day: {study_hours} hours\n\n"
+        "Prioritize by deadline and urgency. Organize the plan day by day, "
+        "clearly listing what to do each day. Keep it realistic and not overloaded."
+    )
+    return ask_ai(prompt)
+
+
+def simplify_question(question):
+    prompt = (
+        f"A student is confused by this question: \"{question}\"\n\n"
+        "Provide, in this order:\n"
+        "1. A simple-English explanation of what it means\n"
+        "2. Meanings of any difficult words\n"
+        "3. A breakdown of what the question is actually asking\n"
+        "4. Step-by-step guidance to answer it\n"
+        "5. A short example\n"
+        "6. One short question to check the student's understanding"
+    )
+    return ask_ai(prompt)
+
+
+def make_pdf(title, content):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Helvetica", "B", 16)
+    pdf.multi_cell(0, 10, title)
+    pdf.ln(4)
+    pdf.set_font("Helvetica", size=12)
+    safe_text = content.encode("latin-1", "replace").decode("latin-1")
+    pdf.multi_cell(0, 8, safe_text)
+    return bytes(pdf.output())
+
+
+def pdf_download_button(label, title, content, filename):
+    pdf_bytes = make_pdf(title, content)
+    st.download_button(
+        label=label,
+        data=pdf_bytes,
+        file_name=filename,
+        mime="application/pdf",
+    )
+
+
 page = st.sidebar.selectbox(
     "Choose a page",
-    ["🏠 Home", "📝 Notes", "❓ Quiz", "🎮 Games"],
+    ["🏠 Home", "📝 Notes", "❓ Quiz", "🎮 Games", "📅 Daily Planner", "🧠 Question Simplifier"],
 )
 
 if page == "🏠 Home":
     st.title("Welcome to Smart Student AI")
-    st.write("Pick **Notes**, **Quiz**, or **Games** from the sidebar, enter a topic, and get real AI-generated help.")
+    st.write("Pick a feature from the sidebar, enter your details, and get real AI-generated help.")
 
 elif page == "📝 Notes":
     st.title("Study Notes Generator")
@@ -60,6 +111,7 @@ elif page == "📝 Notes":
         with st.spinner("Generating notes..."):
             notes = generate_notes(topic)
         st.markdown(notes)
+        pdf_download_button("⬇️ Download Notes as PDF", f"Study Notes: {topic}", notes, "notes.pdf")
 
 elif page == "❓ Quiz":
     st.title("Quiz Generator")
@@ -68,6 +120,7 @@ elif page == "❓ Quiz":
         with st.spinner("Generating quiz..."):
             quiz = generate_quiz(topic)
         st.markdown(quiz)
+        pdf_download_button("⬇️ Download Quiz as PDF", f"Quiz: {topic}", quiz, "quiz.pdf")
 
 elif page == "🎮 Games":
     st.title("Trivia Game")
@@ -93,3 +146,26 @@ elif page == "🎮 Games":
             else:
                 st.error(f"Wrong — correct answer was {correct}")
             st.write(f"Score: {st.session_state.score}")
+
+elif page == "📅 Daily Planner":
+    st.title("Smart Daily Planner")
+    assignments = st.text_area("Assignments and due dates")
+    practicals = st.text_area("Practical records to complete")
+    tests = st.text_area("Daily slip tests")
+    exam_date = st.text_input("Mid-semester exam date")
+    study_hours = st.number_input("Available study time per day (hours)", min_value=1, max_value=16, value=3)
+
+    if st.button("Generate Plan"):
+        with st.spinner("Building your plan..."):
+            plan = generate_plan(assignments, practicals, tests, exam_date, study_hours)
+        st.markdown(plan)
+        pdf_download_button("⬇️ Download Plan as PDF", "My Study Plan", plan, "study_plan.pdf")
+
+elif page == "🧠 Question Simplifier":
+    st.title("AI Question Simplifier")
+    question = st.text_area("Paste a difficult question here")
+    if st.button("Simplify") and question:
+        with st.spinner("Breaking it down..."):
+            simplified = simplify_question(question)
+        st.markdown(simplified)
+        pdf_download_button("⬇️ Download Explanation as PDF", "Question Explained", simplified, "explanation.pdf")
